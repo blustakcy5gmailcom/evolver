@@ -217,7 +217,6 @@
             button.classList.add('rolling');
             mutationBox.classList.add('rolling');
             
-            const finalMutation = getRandomMutation();
             let iterations = 0;
             const maxIterations = 50;
 
@@ -227,7 +226,6 @@
                     iterations++;
                     setTimeout(animateRoll, 50);
                 } else {
-                    mutationBox.textContent = finalMutation;
                     button.disabled = false;
                     button.classList.remove('rolling'); button.textContent = "Roll Mutation";
                     mutationBox.classList.remove('rolling');
