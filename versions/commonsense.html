@@ -1,3 +1,4 @@
+<!--VERSION 1.0 COMMON EDITION RELEASE-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -94,7 +95,13 @@
     ["Remove the last 2 parts placed on your build (undo) (if no parts or build has 1 - 2 parts then re-roll)", false],
     ["Add a part to your build (place)", true, false, 1],
     ["Add 2 parts to your build (place)", true, false, 2],
-    ["Add an ability part to your build (place)", true, true]];
+    ["Add a part to your build (place)", true, false, 1],
+    ["Add a part to your build (place)", true, false, 1],
+    ["Add an ability part to your build (place)", true, true],
+    ["Replace any block with", true, false, 1],
+    ["Replace the last block placed with", true, false, 1],
+    ["Replace any block with", true, true, 1],
+    ["Replace the last block placed with", true, true, 1]];
     const RegularPartTable = {
     "noability": [
         "Skeleton",
@@ -160,7 +167,6 @@
         "Stomach",
         "Intestine",
         "Mover",
-        "Heart",
         "Shell"
     ],
     "ability": [
@@ -183,7 +189,7 @@
         const randomIsh = Math.random();
         let things = undefined;
         things = CommonPartTable[ability_]
-        if (randomIsh > 0.6) things = RegularPartTable[ability_];
+        if (randomIsh > 0.7) things = RegularPartTable[ability_];
         const randomVal = getRandomNumber(0, things.length - 1)
         const partValue = things[randomVal]
         return partValue
