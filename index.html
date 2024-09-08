@@ -1,4 +1,4 @@
-<!--VERSION 1.2.1 RELEASE-->
+<!--VERSION 1.2.2 RELEASE-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -84,12 +84,8 @@
 </head>
 <body>
     <h1>Evolver</h1>
-    <div id="mutationBox"></div>
+    <div id="mutationBox">Roll something to Evolve here!</div>
     <button onclick="rollMutation()">Roll Mutation</button>
-    <audio id="tick">
-        <source src="/evolver/resources/tick.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
     
 
     <script>
@@ -201,15 +197,20 @@
         }
 
         function rollMutation() {
-            const audio = document.getElementById('tick');
-            audio.addEventListener('click', () => {
-                audio.currentTime = 0;
-                audio.play().catch(error => {
-                    console.log("Failed to play audio | ", error);
-                });
-            })
             function playAudio() {
-                audio.click();
+                const audio = document.createElement('audio');
+                audio.src = "/evolver/resources/tick.mp3";
+                audio.type = "audio/mpeg";
+                
+                audio.onended = function() {
+                    this.remove();
+                };
+
+                document.body.appendChild(audio);
+                
+                audio.play().catch(error => {
+                    console.log("Audio play failed:", error);
+                });
             }
             const mutationBox = document.getElementById('mutationBox');
             const button = document.querySelector('button');
