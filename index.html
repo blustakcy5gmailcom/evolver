@@ -181,7 +181,7 @@
         partStr = partStr.slice(1)
         let result = `${toDo} | ${abilityto ? "Ability " : ""}Parts: ${partStr}${
             abilityto ? " | If abilities all used, place: " : ""
-        }${abilityto ? regularPart : `, ${regularPart}`}`
+        }${abilityto ? regularPart : ""}`
         return result
     }
 
