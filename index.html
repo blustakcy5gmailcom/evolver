@@ -195,13 +195,13 @@
             
             const finalMutation = getRandomMutation();
             let iterations = 0;
-            const maxIterations = 100;
+            const maxIterations = 50;
 
             function animateRoll() {
                 if (iterations < maxIterations) {
                     mutationBox.textContent = getRandomMutation();
                     iterations++;
-                    setTimeout(animateRoll, 10);
+                    setTimeout(animateRoll, 50);
                 } else {
                     mutationBox.textContent = finalMutation;
                     button.disabled = false;
