@@ -1,4 +1,4 @@
-<!--VERSION 1.2 COMMON EDITION RELEASE-->
+<!--VERSION 1.2.1 COMMON EDITION RELEASE-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -89,7 +89,7 @@
     <div id="mutationBox"></div>
     <button onclick="rollMutation()">Roll Mutation</button>
     <audio id="tick">
-        <source src="/resources/tick.mp3" type="audio/mpeg">
+        <source src="/evolver/resources/tick.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
     
@@ -227,12 +227,14 @@
 
         function rollMutation() {
             const audio = document.getElementById('tick');
-            
-            function playAudio() {
+            audio.addEventListener('click', () => {
                 audio.currentTime = 0;
                 audio.play().catch(error => {
                     console.log("Failed to play audio | ", error);
                 });
+            })
+            function playAudio() {
+                audio.click();
             }
             const mutationBox = document.getElementById('mutationBox');
             const button = document.querySelector('button');
