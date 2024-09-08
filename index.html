@@ -1,4 +1,4 @@
-<!--VERSION 1.2 RELEASE-->
+<!--VERSION 1.2.1 RELEASE-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -202,12 +202,14 @@
 
         function rollMutation() {
             const audio = document.getElementById('tick');
-            
-            function playAudio() {
+            audio.addEventListener('click', () => {
                 audio.currentTime = 0;
                 audio.play().catch(error => {
                     console.log("Failed to play audio | ", error);
                 });
+            })
+            function playAudio() {
+                audio.click();
             }
             const mutationBox = document.getElementById('mutationBox');
             const button = document.querySelector('button');
