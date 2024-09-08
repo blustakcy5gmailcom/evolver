@@ -1,4 +1,4 @@
-<!--VERSION 1.0 RELEASE-->
+<!--VERSION 1.2 RELEASE-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -86,133 +86,156 @@
     <h1>Evolver</h1>
     <div id="mutationBox"></div>
     <button onclick="rollMutation()">Roll Mutation</button>
+    <audio id="tick">
+        <source src="/resources/tick.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    
 
     <script>
-    const ActionTable = [
-    ["Remove the last part placed on your build (undo) (if no parts or build has 1 part then re-roll)", false],
-    ["Remove the last 2 parts placed on your build (undo) (if no parts or build has 1 - 2 parts then re-roll)", false],
-    ["Add a part to your build (place)", true, false, 1],
-    ["Add 2 parts to your build (place)", true, false, 2],
-    ["Add a part to your build (place)", true, false, 1],
-    ["Add a part to your build (place)", true, false, 1],
-    ["Add an ability part to your build (place)", true, true],
-    ["Replace any block with", true, false, 1],
-    ["Replace the last block placed with", true, false, 1],
-    ["Replace any block with", true, true, 1],
-    ["Replace the last block placed with", true, true, 1]];
-    const PartTable = {
-    "noability": [
-        "Skeleton",
-        "Lipid",
-        "Mender",
-        "Lympth",
-        "Cilia",
-        "Brain",
-        "Beef",
-        "Shell",
-        "Muscle",
-        "Gills",
-        "Drills",
-        "Eyes",
-        "Eyestalk",
-        "Flagellum",
-        "Intestine",
-        "Armour",
-        "Join",
-        "Mover",
-        "Host",
-        "Heart",
-        "Mouth",
-        "Marrow",
-        "Spike",
-        "Stomach",
-        "Feeder"
-    ],
-    "ability": [
-        "Gyro",
-        "Jaws",
-        "Viscop",
-        "Mandible",
-        "Builder",
-        "Chameleon",
-        "Urchin",
-        "Electrolyte",
-        "Vivicyte",
-        "Silklock",
-        "Medusa",
-        "Parasite",
-        "Grazer",
-        "Webber",
-        "Shooter",
-        "Pheromone",
-        "Membrane",
-        "Dropper",
-        "Mace",
-        "Sonar",
-        "Hydrofield",
-        "Jet",
-        "Nouricyte",
-        "Exotoxin",
-        "Lance",
-        "Radula",
-        "Chromatophore"
-    ]
-    }
-    function getRandomNumber(min, max) {
-        const randomNum = Math.random()
-        return Math.round(min + randomNum * (max - min))
-    }
+        const ActionTable = [
+        ["Remove the last part placed on your build (undo) (if no parts or build has 1 part then re-roll)", false],
+        ["Remove the last 2 parts placed on your build (undo) (if no parts or build has 1 - 2 parts then re-roll)", false],
+        ["Add a part to your build (place)", true, false, 1],
+        ["Add 2 parts to your build (place)", true, false, 2],
+        ["Add a part to your build (place)", true, false, 1],
+        ["Add a part to your build (place)", true, false, 1],
+        ["Add an ability part to your build (place)", true, true],
+        ["Replace any block with", true, false, 1],
+        ["Replace the last block placed with", true, false, 1],
+        ["Replace any block with", true, true, 1],
+        ["Replace the last block placed with", true, true, 1]];
+        const PartTable = {
+        "noability": [
+            "Skeleton",
+            "Lipid",
+            "Mender",
+            "Lympth",
+            "Cilia",
+            "Brain",
+            "Beef",
+            "Shell",
+            "Muscle",
+            "Gills",
+            "Drills",
+            "Eyes",
+            "Eyestalk",
+            "Flagellum",
+            "Intestine",
+            "Armour",
+            "Join",
+            "Mover",
+            "Host",
+            "Heart",
+            "Mouth",
+            "Marrow",
+            "Spike",
+            "Stomach",
+            "Feeder"
+        ],
+        "ability": [
+            "Gyro",
+            "Jaws",
+            "Viscop",
+            "Mandible",
+            "Builder",
+            "Chameleon",
+            "Urchin",
+            "Electrolyte",
+            "Vivicyte",
+            "Silklock",
+            "Medusa",
+            "Parasite",
+            "Grazer",
+            "Webber",
+            "Shooter",
+            "Pheromone",
+            "Membrane",
+            "Dropper",
+            "Mace",
+            "Sonar",
+            "Hydrofield",
+            "Jet",
+            "Nouricyte",
+            "Exotoxin",
+            "Lance",
+            "Radula",
+            "Chromatophore"
+        ]
+        }
+        function getRandomNumber(min, max) {
+            const randomNum = Math.random()
+            return Math.round(min + randomNum * (max - min))
+        }
 
-    function getRandomPart(ability) {
-        const ability_ = ability ? "ability" : "noability"
-        const things = PartTable[ability_]
-        const randomVal = getRandomNumber(0, things.length - 1)
-        const partValue = things[randomVal]
-        return partValue
-    }
+        function getRandomPart(ability) {
+            const ability_ = ability ? "ability" : "noability"
+            const things = PartTable[ability_]
+            const randomVal = getRandomNumber(0, things.length - 1)
+            const partValue = things[randomVal]
+            return partValue
+        }
 
-    function getRandomMutation() {
-        const randomVal = getRandomNumber(0, ActionTable.length - 1)
-        const val = ActionTable[randomVal]
-        const [toDo, genPart, ability, amount] = [val[0], val[1], val[2], val[3]]
-        if (!genPart) return toDo
-        const amtogen = amount || 1
-        const abilityto = ability || false
-        let parts
-        parts = []
-        let regularPart
-        for (let i = 0; i < amtogen; i++) parts.push(getRandomPart(abilityto))
-        regularPart = getRandomPart(false)
-        let partStr = ""
-        for (const part of parts) partStr = `${partStr}, ${part}`
-        partStr = partStr.slice(1)
-        let result = `${toDo} | ${abilityto ? "Ability " : ""}Parts: ${partStr}${
-            abilityto ? " | If abilities all used, place: " : ""
-        }${abilityto ? regularPart : ""}`
-        return result
-    }
-
+        function getRandomMutation() {
+            const randomVal = getRandomNumber(0, ActionTable.length - 1)
+            const val = ActionTable[randomVal]
+            const [toDo, genPart, ability, amount] = [val[0], val[1], val[2], val[3]]
+            if (!genPart) return toDo
+            const amtogen = amount || 1
+            const abilityto = ability || false
+            let parts
+            parts = []
+            let regularPart
+            for (let i = 0; i < amtogen; i++) parts.push(getRandomPart(abilityto))
+            regularPart = getRandomPart(false)
+            let partStr = ""
+            for (const part of parts) partStr = `${partStr}, ${part}`
+            partStr = partStr.slice(1)
+            let result = `${toDo} | ${abilityto ? "Ability " : ""}Parts: ${partStr}${
+                abilityto ? " | If abilities all used, place: " : ""
+            }${abilityto ? regularPart : ""}`
+            return result
+        }
+        function easeInQuart(x) {
+            return x * x * x * x;
+        }
 
         function rollMutation() {
+            const audio = document.getElementById('tick');
+            
+            function playAudio() {
+                audio.currentTime = 0;
+                audio.play().catch(error => {
+                    console.log("Failed to play audio | ", error);
+                });
+            }
             const mutationBox = document.getElementById('mutationBox');
             const button = document.querySelector('button');
-            button.disabled = true; button.textContent = "Rolling Mutation";
+            button.disabled = true;
+            button.textContent = "Rolling Mutation";
             button.classList.add('rolling');
             mutationBox.classList.add('rolling');
             
             const finalMutation = getRandomMutation();
             let iterations = 0;
-            const maxIterations = 50;
+            const maxIterations = 25;
+            const initialDelay = 20;
+            const finalDelay = 500;
 
             function animateRoll() {
                 if (iterations < maxIterations) {
                     mutationBox.textContent = getRandomMutation();
                     iterations++;
-                    setTimeout(animateRoll, 50);
+                    const progress = iterations / maxIterations;
+                    const easedProgress = easeInQuart(progress);
+                    const currentDelay = initialDelay + (finalDelay - initialDelay) * easedProgress;
+                    playAudio();
+                    setTimeout(animateRoll, currentDelay);
                 } else {
                     mutationBox.textContent = finalMutation;
                     button.disabled = false;
-                    button.classList.remove('rolling'); button.textContent = "Roll Mutation";
+                    button.classList.remove('rolling');
+                    button.textContent = "Roll Mutation";
                     mutationBox.classList.remove('rolling');
                 }
             }
