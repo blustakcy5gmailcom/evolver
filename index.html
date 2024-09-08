@@ -1,25 +1,219 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, minimum-scale=0.1">
-    <title>Middle Click This For Dancing Cat</title>
-    <meta property="og:title" content="Click Here For Dancing Cat">
-    <meta property="og:description" content="real frfr">
-    <meta property="og:image" content="https://media1.tenor.com/m/StMcxdC56MMAAAAC/cat.gif">
-    <meta property="og:image:type" content="image/gif">
-    <meta property="og:image:width" content="335">
-    <meta property="og:image:height" content="327">
-    <meta property="og:type" content="website">
-</head>
-<body style="margin: 0px; height: 100%; background-color: rgb(14, 14, 14);">
-    <img style="display: block;-webkit-user-select: none;margin: auto;background-color: hsl(0, 0%, 90%);transition: background-color 300ms;" src="https://media1.tenor.com/m/StMcxdC56MMAAAAC/cat.gif">
-</body>
-    <script>
-        window.onload = function() {
-            if (window.top === window.self) {
-                // Not embedded
-                window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evolver</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #0E1116;
+            color: #E6E8EA;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+        #mutationBox {
+            background-color: #1C1F26;
+            border: 1px solid #2D3139;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Courier New', Courier, monospace;
+            width: 100%;
+            max-width: 600px;
+            min-height: 60px;
+            margin-bottom: 2rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+            transition: all 0.3s ease;
+        }
+        #mutationBox.rolling {
+            background-color: #23262F;
+            min-height: 80px;
+        }
+        button {
+            background-color: #5E6AD2;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background-color: #4F59B8;
+            box-shadow: 0 4px 12px rgba(94, 106, 210, 0.4);
+        }
+        button:active {
+            background-color: #424CA0;
+            box-shadow: 0 2px 8px rgba(94, 106, 210, 0.6);
+            transform: translateY(1px);
+        }
+        button:disabled {
+            background-color: #3A3F4D;
+            cursor: not-allowed;
+            opacity: 0.7;
+            box-shadow: none;
+            transform: none;
+        }
+        button.rolling {
+            border-radius: 10px;
+        }
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
             }
-        };
+            #mutationBox {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Evolver</h1>
+    <div id="mutationBox"></div>
+    <button onclick="rollMutation()">Roll Mutation</button>
+
+    <script>
+    const ActionTable = [
+    ["Remove the last part placed on your build (undo)", false],
+    ["Remove the last 2 parts placed on your build (undo)", false],
+    ["Add a part to your build (place)", true, false, 1],
+    ["Add 2 parts to your build (place)", true, false, 2],
+    ["Add an ability part to your build (place)", true, false]];
+    const PartTable = {
+    "noability": [
+        "Skeleton",
+        "Lipid",
+        "Mender",
+        "Lympth",
+        "Cilia",
+        "Brain",
+        "Beef",
+        "Shell",
+        "Muscle",
+        "Gills",
+        "Drills",
+        "Eyes",
+        "Eyestalk",
+        "Flagellum",
+        "Intestine",
+        "Armour",
+        "Join",
+        "Mover",
+        "Host",
+        "Mouth",
+        "Marrow",
+        "Spike",
+        "Stomach",
+        "Feeder"
+    ],
+    "ability": [
+        "Gyro",
+        "Jaws",
+        "Viscop",
+        "Mandible",
+        "Builder",
+        "Chameleon",
+        "Urchin",
+        "Electrolyte",
+        "Vivicyte",
+        "Silklock",
+        "Medusa",
+        "Parasite",
+        "Grazer",
+        "Webber",
+        "Shooter",
+        "Pheromone",
+        "Membrane",
+        "Dropper",
+        "Mace",
+        "Sonar",
+        "Hydrofield",
+        "Jet",
+        "Heart",
+        "Nouricyte",
+        "Exotoxin",
+        "Lance",
+        "Radula",
+        "Chromatophore"
+    ]
+    }
+    function getRandomNumber(min, max) {
+        const randomNum = Math.random()
+        return Math.round(min + randomNum * (max - min))
+    }
+
+    function getRandomPart(ability) {
+        const ability_ = ability ? "ability" : "noability"
+        const things = PartTable[ability_]
+        const randomVal = getRandomNumber(0, things.length - 1)
+        const partValue = things[randomVal]
+        return partValue
+    }
+
+    function getRandomMutation() {
+        const randomVal = getRandomNumber(0, ActionTable.length - 1)
+        const val = ActionTable[randomVal]
+        const [toDo, genPart, ability, amount] = [val[0], val[1], val[2], val[3]]
+        if (!genPart) return toDo
+        const amtogen = amount || 1
+        const abilityto = ability || false
+        let parts
+        parts = []
+        let regularPart
+        for (let i = 0; i < amtogen; i++) parts.push(getRandomPart(abilityto))
+        regularPart = getRandomPart(false)
+        let partStr = ""
+        for (const part of parts) partStr = `${partStr}, ${part}`
+        partStr = partStr.slice(1)
+        let result = `${toDo} | ${abilityto ? "Ability " : ""}Parts: ${partStr}${
+            abilityto ? " | If abilities all used, place: " : ""
+        }${abilityto ? regularPart : `, ${regularPart}`}`
+        return result
+    }
+
+
+        function rollMutation() {
+            const mutationBox = document.getElementById('mutationBox');
+            const button = document.querySelector('button');
+            button.disabled = true; button.textContent = "Rolling Mutation";
+            button.classList.add('rolling');
+            mutationBox.classList.add('rolling');
+            
+            const finalMutation = getRandomMutation();
+            let iterations = 0;
+            const maxIterations = 100;
+
+            function animateRoll() {
+                if (iterations < maxIterations) {
+                    mutationBox.textContent = getRandomMutation();
+                    iterations++;
+                    setTimeout(animateRoll, 10);
+                } else {
+                    mutationBox.textContent = finalMutation;
+                    button.disabled = false;
+                    button.classList.remove('rolling'); button.textContent = "Roll Mutation";
+                    mutationBox.classList.remove('rolling');
+                }
+            }
+
+            animateRoll();
+        }
+
+        rollMutation();
     </script>
+</body>
 </html>
